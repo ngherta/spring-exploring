@@ -16,21 +16,13 @@ public class RatingServiceImpl implements RatingService {
 
     private final RatingRepository ratingRepository;
     private final UserRepository userRepository;
+    private final List<VotingValidator> validators;
 
     @Override
     @Transactional
     public void vote(VoteCommand command) {
-        boolean isUserAlreadyVoted = ratingRepository.existsByVotedByIdAndVotedForId(command.getVotedByUserId(), command.getVotedForUserId());
-
-        if (isUserAlreadyVoted || areUsersEqual(command)) {
-            throw new RuntimeException("User already voted");
-        } else {
-            createNewRating(command);
-        }
-    }
-
-    private boolean areUsersEqual(VoteCommand command) {
-        return command.getVotedByUserId().equals(command.getVotedForUserId());
+        validators.forEach(e -> e.validate(command));
+        createNewRating(command);
     }
 
     private void createNewRating(VoteCommand command) {
