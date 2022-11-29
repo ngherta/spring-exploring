@@ -6,53 +6,50 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Entity
-@Table(name = "users")
+@Table(name = "RATING")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class Rating {
 
     @Id
     @SequenceGenerator(name = "hibernate_sequence", sequenceName = "hibernate_sequence", initialValue = 1000, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "hibernate_sequence")
     private Long id;
 
-    @Column
-    private String firstName;
-    @Column
-    private String lastName;
-    @Column
-    private int age;
-    @Column(name = "creation_date")
-    @Setter(value = AccessLevel.PRIVATE)
-    private LocalDateTime creationDate;
-    @Column
-    private int rating = 0;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voted_by", nullable = false)
+    private User votedBy;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "voted_for", nullable = false)
+    private User votedFor;
 
-    public User(String firstName, String lastName, int age) {
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.creationDate = LocalDateTime.now();
+    private Integer stars;
+
+    public Rating(User votedBy, User votedFor, Integer stars) {
+        this.votedBy = votedBy;
+        this.votedFor = votedFor;
+        this.stars = stars;
     }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id);
+        Rating rating = (Rating) o;
+        return Objects.equals(id, rating.id);
     }
 
     @Override

@@ -8,11 +8,15 @@ import lombok.Data;
 @AllArgsConstructor
 public class UserDto {
 
-  private String firstName;
-  private String lastName;
-  private int age;
+    private String firstName;
+    private String lastName;
+    private int age;
+    private int rating;
 
-  public static UserDto map(User user) {
-    return new UserDto(user.getFirstName(), user.getLastName(), user.getAge());
-  }
+    public static UserDto map(User user) {
+        return new UserDto(user.getFirstName(),
+                user.getLastName(),
+                user.getAge(),
+                user.getRating());
+    }
 }

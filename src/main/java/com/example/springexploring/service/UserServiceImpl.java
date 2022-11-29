@@ -15,23 +15,23 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
 
-  private final UserRepository userRepository;
+    private final UserRepository userRepository;
 
-  @Override
-  @Transactional
-  public void save(AddUserCommand command) {
-    User user = new User(command.getFirstName(), command.getLastName(), command.getAge());
-    userRepository.save(user);
-  }
-
-  @Override
-  @Transactional
-  public List<UserDto> findAll() {
-    List<User> users = userRepository.findAll();
-    List<UserDto> dtos = new ArrayList<>();
-    for (User user : users) {
-      dtos.add(UserDto.map(user));
+    @Override
+    @Transactional
+    public void save(AddUserCommand command) {
+        User user = new User(command.getFirstName(), command.getLastName(), command.getAge());
+        userRepository.save(user);
     }
-    return dtos;
-  }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserDto> findAll() {
+        List<User> users = userRepository.findAll();
+        List<UserDto> dtos = new ArrayList<>();
+        for (User user : users) {
+            dtos.add(UserDto.map(user));
+        }
+        return dtos;
+    }
 }
